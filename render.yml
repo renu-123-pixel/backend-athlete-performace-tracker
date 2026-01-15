@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: backend-athlete-tracker
+    env: node
+    plan: free
+    region: oregon  # or your preferred region
+    buildCommand: npm install
+    startCommand: node app.js   # replace app.js if your main file is different
+    envVars:
+      - key: NODE_ENV
+        value: production
