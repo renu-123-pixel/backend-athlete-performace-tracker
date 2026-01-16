@@ -1,4 +1,5 @@
-import Athlete from "../models/Athlete.js";
+
+import Athlete from "../models/athlete.model.js";
 
 // Create athlete
 export const createAthlete = async (req, res) => {

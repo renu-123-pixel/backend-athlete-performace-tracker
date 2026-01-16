@@ -1,12 +1,12 @@
 import express from "express";
 import { v4 as uuid } from "uuid";
-import { athletes } from "../models/athlete.model.js";
+import Athlete from "../models/athlete.model.js";
 import { coachOnly } from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.json(athletes);
+  res.json(Athlete);
 });
 
 router.post("/", coachOnly, (req, res) => {
@@ -17,12 +17,12 @@ router.post("/", coachOnly, (req, res) => {
     sport: req.body.sport
   };
 
-  athletes.push(athlete);
+  Athlete.push(athlete);
   res.status(201).json(athlete);
 });
 
 router.put("/:id", coachOnly, (req, res) => {
-  const athlete = athletes.find(a => a.id === req.params.id);
+  const athlete = Athlete.find(a => a.id === req.params.id);
   if (!athlete) {
     return res.status(404).json({ error: "Athlete not found" });
   }
@@ -35,12 +35,12 @@ router.put("/:id", coachOnly, (req, res) => {
 });
 
 router.delete("/:id", coachOnly, (req, res) => {
-  const index = athletes.findIndex(a => a.id === req.params.id);
+  const index = Athlete.findIndex(a => a.id === req.params.id);
   if (index === -1) {
     return res.status(404).json({ error: "Athlete not found" });
   }
 
-  athletes.splice(index, 1);
+  Athlete.splice(index, 1);
   res.json({ message: "Athlete deleted" });
 });
 

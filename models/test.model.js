@@ -6,5 +6,6 @@ const testSchema = new mongoose.Schema({
   description: String
 });
 
-export default mongoose.model("Test", testSchema);
+ const tests = mongoose.model("Test", testSchema);
 
+export default tests;

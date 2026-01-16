@@ -1,6 +1,6 @@
 import express from "express";
 import { v4 as uuid } from "uuid";
-import { tests } from "../models/test.model.js";
+import tests from "../models/test.model.js";
 import { coachOnly } from "../middleware/role.middleware.js";
 
 const router = express.Router();

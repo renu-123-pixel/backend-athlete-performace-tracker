@@ -1,13 +1,13 @@
 import express from "express";
-import { athletes } from "../models/athlete.model.js";
-import { tests } from "../models/test.model.js";
+import Athlete from "../models/athlete.model.js";
+import tests from "../models/test.model.js";
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
   const leaderboard = [];
 
-  for (const athlete of athletes) {
+  for (const athlete of Athlete) {
     const athleteTests = tests.filter(
       t => t.athleteId === athlete.id
     );

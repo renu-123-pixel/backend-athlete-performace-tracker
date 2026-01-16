@@ -1,4 +1,4 @@
-import Score from "../models/Score.js";
+import Score from "../models/score.model.js";
 
 // Add score
 export const addScore = async (req, res) => {

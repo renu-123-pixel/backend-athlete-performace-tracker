@@ -8,5 +8,6 @@ const athleteSchema = new mongoose.Schema({
   country: String
 }, { timestamps: true });
 
-export default mongoose.model("Athlete", athleteSchema);
+const Athlete= mongoose.model("Athlete", athleteSchema);
 
+export default Athlete;
