@@ -1,47 +1,50 @@
 import express from "express";
-import { v4 as uuid } from "uuid";
-import Athlete from "../models/athlete.model.js";
+import Athlete from "../models/athlete.model.js"; // Mongoose model
 import { coachOnly } from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.json(Athlete);
-});
-
-router.post("/", coachOnly, (req, res) => {
-  const athlete = {
-    id: uuid(),
-    name: req.body.name,
-    age: req.body.age,
-    sport: req.body.sport
-  };
-
-  Athlete.push(athlete);
-  res.status(201).json(athlete);
-});
-
-router.put("/:id", coachOnly, (req, res) => {
-  const athlete = Athlete.find(a => a.id === req.params.id);
-  if (!athlete) {
-    return res.status(404).json({ error: "Athlete not found" });
+// Get all athletes
+router.get("/", async (req, res) => {
+  try {
+    const athletes = await Athlete.find();
+    res.json(athletes);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  athlete.name = req.body.name ?? athlete.name;
-  athlete.age = req.body.age ?? athlete.age;
-  athlete.sport = req.body.sport ?? athlete.sport;
-
-  res.json(athlete);
 });
 
-router.delete("/:id", coachOnly, (req, res) => {
-  const index = Athlete.findIndex(a => a.id === req.params.id);
-  if (index === -1) {
-    return res.status(404).json({ error: "Athlete not found" });
+// Add new athlete
+router.post("/", async (req, res) => {
+  try {
+    const athlete = new Athlete({
+      name: req.body.name,
+      age: req.body.age,
+      gender: req.body.gender,
+      sport: req.body.sport,
+      heartRate: req.body.heartRate,
+      speed: req.body.speed,
+      agility: req.body.agility,
+      strength: req.body.strength,
+      reaction: req.body.reaction,
+      performanceScore: req.body.performanceScore,
+    });
+
+    await athlete.save();
+    res.status(201).json(athlete);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
-
-  Athlete.splice(index, 1);
-  res.json({ message: "Athlete deleted" });
 });
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await Athlete.findByIdAndDelete(req.params.id);
+    res.json({ message: "Athlete deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Delete failed" });
+  }
+});
+
 
 export default router;

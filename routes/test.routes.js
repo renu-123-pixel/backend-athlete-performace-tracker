@@ -1,28 +1,38 @@
 import express from "express";
 import { v4 as uuid } from "uuid";
-import tests from "../models/test.model.js";
+import Test from "../models/test.model.js"; // Mongoose model
 import { coachOnly } from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
-router.post("/", coachOnly, (req, res) => {
-  const test = {
-    id: uuid(),
-    athleteId: req.body.athleteId,
-    sprint30m: Number(req.body.sprint30m),
-    verticalJump: Number(req.body.verticalJump),
-    createdAt: new Date()
-  };
+// Add a new test
+router.post("/", async (req, res) => {
+  try {
+    const test = new Test({
+      id: uuid(),
+      athleteId: req.body.athleteId,
+      sprint30m: Number(req.body.sprint30m),
+      verticalJump: Number(req.body.verticalJump), // fixed typo
+      createdAt: new Date()
+    });
 
-  tests.push(test);
-  res.status(201).json(test);
+    await test.save();
+    res.status(201).json(test);
+  } catch (err) {
+    console.error("Error adding test:", err);
+    res.status(400).json({ error: err.message });
+  }
 });
 
-router.get("/:athleteId", (req, res) => {
-  const result = tests.filter(
-    t => t.athleteId === req.params.athleteId
-  );
-  res.json(result);
+// Get all tests for a specific athlete
+router.get("/:athleteId", async (req, res) => {
+  try {
+    const athleteTests = await Test.find({ athleteId: req.params.athleteId });
+    res.json(athleteTests);
+  } catch (err) {
+    console.error("Error fetching tests:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 export default router;

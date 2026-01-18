@@ -9,3 +9,4 @@ export function coachOnly(req, res, next) {
 
   next();
 }
+

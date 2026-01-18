@@ -6,13 +6,41 @@ const scoreSchema = new mongoose.Schema({
     ref: "Athlete",
     required: true
   },
-  test: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Test",
+
+  heartRate: {
+    type: Number,
     required: true
   },
-  scoreValue: Number,
-  testDate: { type: Date, default: Date.now }
+
+  speed: {
+    type: Number,
+    required: true
+  },
+
+  agility: {
+    type: Number,
+    required: true
+  },
+
+  strength: {
+    type: Number,
+    required: true
+  },
+
+  reaction: {
+    type: Number,
+    required: true
+  },
+
+  performanceScore: {
+    type: Number,
+    required: true
+  },
+
+  testDate: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 export default mongoose.model("Score", scoreSchema);

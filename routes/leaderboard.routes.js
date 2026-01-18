@@ -1,35 +1,67 @@
+
 import express from "express";
 import Athlete from "../models/athlete.model.js";
-import tests from "../models/test.model.js";
+import { coachOnly } from "../middleware/role.middleware.js";
 
 const router = express.Router();
+router.get("/", async (req, res) => {
+  try {
+    const athletes = await Athlete.find()
+      .sort({ performanceScore: -1 })
+      .populate("athlete");
 
-router.get("/", (req, res) => {
-  const leaderboard = [];
-
-  for (const athlete of Athlete) {
-    const athleteTests = tests.filter(
-      t => t.athleteId === athlete.id
+    console.log(
+      "Sorted athletes:",
+      athletes.map(a => a.performanceScore)
     );
 
-    if (athleteTests.length === 0) continue;
-
-    const latestTest = athleteTests[athleteTests.length - 1];
-
-    const sprintScore = (10 / latestTest.sprint30m) * 50;
-    const jumpScore = (latestTest.verticalJump / 100) * 50;
-
-    const totalScore = Math.round(sprintScore + jumpScore);
-
-    leaderboard.push({
-      athleteName: athlete.name,
-      totalScore,
-      badge: totalScore >= 80 ? "Level 1 Athlete" : "—"
-    });
+    res.json(athletes);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
+});
 
-  leaderboard.sort((a, b) => b.totalScore - a.totalScore);
-  res.json(leaderboard);
+// Add new athlete
+router.post("/", async (req, res) => {
+  try {
+    const {
+      name,
+      age,
+      gender,
+      sport,
+      heartRate = 0,
+      speed = 0,
+      agility = 0,
+      strength = 0,
+      reaction = 0,
+      performanceScore
+    } = req.body;
+
+    // Calculate performanceScore if not provided
+    const finalPerformanceScore =
+      performanceScore !== undefined && performanceScore !== null
+        ? performanceScore
+        : Math.round((heartRate + speed + agility + strength + reaction) / 5);
+
+    const athlete = new Athlete({
+      name,
+      age,
+      gender,
+      sport,
+      heartRate,
+      speed,
+      agility,
+      strength,
+      reaction,
+      performanceScore: finalPerformanceScore
+    });
+
+    await athlete.save();
+    res.status(201).json(athlete);
+  } catch (err) {
+    console.error("Error adding athlete:", err);
+    res.status(400).json({ error: err.message });
+  }
 });
 
 export default router;

@@ -1,11 +1,26 @@
 import mongoose from "mongoose";
 
 const testSchema = new mongoose.Schema({
-  testName: { type: String, required: true },
-  unit: String,
-  description: String
+  testName: {
+    type: String,
+    required: true,
+    unique: true
+  },
+
+  unit: {
+    type: String,
+    enum: ["bpm", "sec", "ms", "kg", "score"],
+    default: "score"
+  },
+
+  description: {
+    type: String
+  },
+
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
- const tests = mongoose.model("Test", testSchema);
-
-export default tests;
+export default mongoose.model("Test", testSchema);
