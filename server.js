@@ -26,10 +26,9 @@ app.use("/athletes", athleteRoutes);
 app.use("/tests", testRoutes);
 app.use("/scores", scoreRoutes);
 app.use("/leaderboard", leaderboardRoutes);
-app.use("/api/athletes", athleteRoutes);
 
 app.get("/", (req, res) => res.send("Peak Athlete Backend Running"));
- const PORT = process.env.PORT || 5000;;
+ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 
