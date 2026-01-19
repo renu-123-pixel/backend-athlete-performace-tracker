@@ -3,10 +3,10 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-import athleteRoutes from "./routes/athlete.routes.js";
 import testRoutes from "./routes/test.routes.js";
 import leaderboardRoutes from "./routes/leaderboard.routes.js";
 import scoreRoutes from "./routes/score.routes.js";
+import athleteRoutes from "./routes/athlete.routes.js"; // ✅ IMPORTANT
 
 dotenv.config();
 
@@ -25,11 +25,13 @@ mongoose
 // Test root
 app.get("/", (req, res) => res.send("Peak Athlete Backend Running"));
 
-// Mount routes at /api/*
-app.use("/api/athletes", athleteRoutes);
+// API routes
 app.use("/api/tests", testRoutes);
 app.use("/api/scores", scoreRoutes);
-app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/athletes", athleteRoutes);      // CRUD
+app.use("/api/leaderboard", leaderboardRoutes); // ranking view
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on port ${PORT}`)
+);
